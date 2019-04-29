@@ -17,11 +17,14 @@ def generate_token(username, password):
     token = hashlib.md5(b64_key).hexdigest()
     return token
 
+
+
 #连接数据库
 def get_db():
     db = sqlite3.connect(app.config['DATABASE'])
     cur = db.cursor()
     return db, cur
+
 
 
 #发送json数据至前端
@@ -43,6 +46,7 @@ def send_json(num,token):
         info['success'] = "0"
         jsonify(info)  # 发送至前端
 
+        
         
 #登录
 @api.route('/api/login', methods=['POST', 'GET'])
