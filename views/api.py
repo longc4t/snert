@@ -20,7 +20,7 @@ def generate_token(username, password):
 
 #连接数据库
 def get_db():
-    db = sqlite3.connect(app.config['DATABASE'])
+    db = sqlite3.connect('/database.db')
     cur = db.cursor()
     return db, cur
 
