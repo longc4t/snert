@@ -10,6 +10,12 @@ def getjson():
 def testapi():
     return "<h1>TEST API!"
 
+#生成token
+def generate_token(username, password):
+    key = "{0}|{1}".format(username, password)
+    b64_key = base64.b64encode(key.encode("utf-8"))
+    token = hashlib.md5(b64_key).hexdigest()
+    return token
 
 #连接数据库
 def get_db():
