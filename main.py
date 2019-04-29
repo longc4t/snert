@@ -1,6 +1,7 @@
 from config import app
 from config import sqlite3
 
+
 def init_db():
     conn = sqlite3.connect('./user.db')
     cursor = conn.cursor()
@@ -43,4 +44,4 @@ def init_db():
 if __name__ == '__main__':
     init_db()
     app.run()
-    
+

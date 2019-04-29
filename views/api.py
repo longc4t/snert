@@ -1,4 +1,4 @@
-from config import *
+from config import Blueprint,json,request,base64,hashlib,jsonify,sqlite3,app
 api = Blueprint('api', __name__)
 
 
@@ -27,10 +27,10 @@ def get_db():
 
 #装饰器
 def checklogin(token):
-    conn, cursor = get_db()
+    cur, cursor = get_db()
     tokens = cursor.fetchall()
     cursor.close()
-    conn.close()
+    cur.close()
     for i in tokens:
         if token == i:
             # Already logged in
@@ -62,7 +62,7 @@ def send_json(num,token):
         
         
 #登录
-@api.route('/api/login', methods=['POST', 'GET'])
+@api.route('/login', methods=['POST', 'GET'])
 def login():
     token = ""
     try:
@@ -71,7 +71,6 @@ def login():
             username = request.form['username']
             password = request.form['password']
             db, cur = get_db()
-
             passwd_hash_tuple = cur.execute(
                 'SELECT password FROM users WHERE username=?', [username]).fetchone()   # return a tuple
 
@@ -91,7 +90,7 @@ def login():
     
     
 #注册
-@api.route('/api/reg', methods=['POST','GET'])
+@api.route('/reg', methods=['POST','GET'])
 def register():
     token = ""
     try:
@@ -120,9 +119,9 @@ def register():
 
 
 #查找评论
-@api.route("/api/comment/search", methods=["POST"])
+@api.route("/comment/search", methods=["POST"])
 def searchcomment():
-    reqdata = json.get()
+    reqdata = getjson()
     if checklogin(reqdata["token"]):
         returndata = {"success": 1, "data": []}
         db, cur = get_db()
@@ -139,9 +138,9 @@ def searchcomment():
 
 
 #添加评论
-@api.route("/api/comment/add", methods=["POST"])
+@api.route("/comment/add", methods=["POST"])
 def addcomment():
-    reqdata = json.get()
+    reqdata = getjson()
     if checklogin(reqdata["token"]):
         try:
             db, cur = get_db()
@@ -162,9 +161,9 @@ def addcomment():
 
 
 # 添加文章
-@api.route("/api/article/add",methods=["POST"])
+@api.route("/article/add",methods=["POST"])
 def send_article():
-    reqdata=json.get()
+    reqdata=getjson()
     if checklogin(reqdata["token"]):
         db, cur = get_db()
         try:
@@ -184,9 +183,9 @@ def send_article():
         return jsonify({"success": 0, "msg": "请登录"})
 
 # 搜索文章
-@api.route("/api/article/search",methods=["POST"])
-def article():
-    reqdata=json.get()
+@api.route("/article/search",methods=["POST"])
+def articlesearch():
+    reqdata=getjson()
     if checklogin(reqdata["token"]):
         returndata={"success":1,"data":[]}
         db, cur = get_db()
@@ -202,46 +201,47 @@ def article():
         return jsonify({"success":0,"msg":"请登录"})
 
 # 文章分页显示
-@api.route("/api/article/index",method="POST")
-def article():
-	reqdata=json.get()
-	if checklogin(reqdata["token"]):
-		returndata={"success":1,"data":[]}
-		for i in reqdata["articleidarray"]:
-			sqldata = cur.execute("(select * from article desc articletimestamp limit ?*3,?*3+3),?",i)
-			tmpdata=dict(sqldata)
-			returndata["data"].append(tmpdata)
-		return jsonify(returndata)
-	else:
-		return jsonify({"success":0,"msg":"请登录"})
+@api.route("/article/index",methods=["POST"])
+def articleshow():
+    reqdata=getjson()
+    db, cur = get_db()
+    if checklogin(reqdata["token"]):
+        returndata={"success":1,"data":[]}
+        for i in reqdata["articleidarray"]:
+            sqldata = cur.execute("(select * from article desc articletimestamp limit ?*3,?*3+3),?",i)
+            tmpdata=dict(sqldata)
+            returndata["data"].append(tmpdata)
+        return jsonify(returndata)
+    else:
+        return jsonify({"success":0,"msg":"请登录"})
 
 #修改个人信息
-@api.route("api/user/change",method="POST")
+@api.route("/user/change",methods=["POST"])
 def change():
-    reqdata = json.get()
+    reqdata = getjson()
     if checklogin(reqdata["token"]):
         db, cur = get_db()
         cursor = cur.execute("SELECT personsay,username,password,token FROM user WHERE userid= ?", reqdata['userid'])
         users = dict(cursor)
         if (not reqdata['oldpassword'] or not reqdata['newpassword']):
             token = generate_token(users['username'], reqdata['newpassword'])
-            conn.execute("UPDATE user SET personsay=? WHERE userid=?", reqdata['personsay'], reqdata['userid'])
-            conn.execute("UPDATE user SET token=? WHERE userid=?", token, reqdata['userid'])
-            conn.commit()
+            cur.execute("UPDATE user SET personsay=? WHERE userid=?", reqdata['personsay'], reqdata['userid'])
+            cur.execute("UPDATE user SET token=? WHERE userid=?", token, reqdata['userid'])
+            db.commit()
             cur.close()
             db.close()
             return jsonify({"success": 1, "token": users['token'], "msg": "修改成功"})
         elif reqdata['oldpassword'] != users['password']:
             token = generate_token(users['username'], reqdata['newpassword'])
-            conn.execute("UPDATE user SET password=? WHERE userid=?", reqdata['newpassword'], reqdata['userid'])
-            conn.execute("UPDATE user SET personsay=? WHERE userid=?", reqdata['personsay'], reqdata['userid'])
-            conn.execute("UPDATE user SET token=? WHERE userid=?", token, reqdata['userid'])
-            conn.commit()
+            cur.execute("UPDATE user SET password=? WHERE userid=?", reqdata['newpassword'], reqdata['userid'])
+            cur.execute("UPDATE user SET personsay=? WHERE userid=?", reqdata['personsay'], reqdata['userid'])
+            cur.execute("UPDATE user SET token=? WHERE userid=?", token, reqdata['userid'])
+            db.commit()
             cur.close()
             db.close()
             return jsonify({"success": 1, "token": token, "msg": "修改成功"})
         else:
-            conn.commit()
+            db.commit()
             cur.close()
             db.close()
             return jsonify({"success": 0, "token": "", "msg": "密码不正确"})
