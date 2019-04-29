@@ -118,6 +118,89 @@ def register():
     cur.close()
     db.close()
 
+
+#查找评论
+@api.route("/api/comment/search", methods=["POST"])
+def searchcomment():
+    reqdata = json.get()
+    if checklogin(reqdata["token"]):
+        returndata = {"success": 1, "data": []}
+        db, cur = get_db()
+        for i in reqdata["commentidarrary"]:
+            sqldata = cur.execute("select * from article where commentid= ?", i)
+            tmpdata = dict(sqldata)
+            returndata["data"].append(tmpdata)
+            db.commit()
+            cur.close()
+            db.close()
+            return jsonify(returndata)
+    else:
+        return jsonify({"success": 0, "msg": "请登录"})
+
+
+#添加评论
+@api.route("/api/comment/add", methods=["POST"])
+def addcomment():
+    reqdata = json.get()
+    if checklogin(reqdata["token"]):
+        try:
+            db, cur = get_db()
+            cur.execute("INSERT INTO Persons VALUES (?, ?, ?, ?)", reqdata["commentauthor"],
+                           reqdata["commentauthorid"], reqdata["commentcontent"], reqdata["commenttimestamp"])
+            db.commit()
+            cur.close()
+            db.close()
+            return jsonify({"success": 1, "msg": "添加成功"})
+        except:
+            db.commit()
+            cur.close()
+            db.close()
+            return jsonify({"success": 0, "msg": "添加失败"})
+
+    else:
+        return jsonify({"success": 0, "msg": "请登录"})
+
+
+# 添加文章
+@api.route("/api/article/add",methods=["POST"])
+def send_article():
+    reqdata=json.get()
+    if checklogin(reqdata["token"]):
+        db, cur = get_db()
+        try:
+            cur.execute("INSERT INTO Persons VALUES (?, ?, ?, ?)",reqdata["article_author"],reqdata["article_authorid"], reqdata["article_content"], reqdata["article_timestamp"])
+            db.commit()
+            cur.close()
+            db.close()
+            return jsonify({"success": 1, "msg": "发送成功"})
+
+        except:
+            db.commit()
+            cur.close()
+            db.close()
+            return jsonify({"success": 0, "msg": "发送失败"})
+
+    else:
+        return jsonify({"success": 0, "msg": "请登录"})
+
+# 搜索文章
+@api.route("/api/article/search",methods=["POST"])
+def article():
+    reqdata=json.get()
+    if checklogin(reqdata["token"]):
+        returndata={"success":1,"data":[]}
+        db, cur = get_db()
+        for i in reqdata["articleidarray"]:
+            sqldata = cur.execute("select * from article where articleid= ?",i)
+            tmpdata=dict(sqldata)
+            returndata["data"].append(tmpdata)
+        db.commit()
+        cur.close()
+        db.close()
+        return jsonify(returndata)
+    else:
+        return jsonify({"success":0,"msg":"请登录"})
+
 # 文章分页显示
 @api.route("/api/article/index",method="POST")
 def article():
@@ -133,33 +216,5 @@ def article():
 		return jsonify({"success":0,"msg":"请登录"})
 
 	
-# 添加文章
-@api.route("/api/article/add",method="POST")
-def send_article():
-	reqdata=json.get()
-	if checklogin(reqdata["token"]):
-		returndata = {"success": 1, "data": []}
-		try:
-			cur.execute("INSERT INTO Persons VALUES (?, ?, ?, ?)",reqdata["article_author"],reqdata["article_authorid"], reqdata["article_content"], reqdata["article_timestamp"])
-			return jsonify({"success": 1, "msg": "发送成功"})
 
-		except:
-			return jsonify({"success": 0, "msg": "发送失败"})
-
-	else:
-		return jsonify({"success": 0, "msg": "请登录"})
-
-	
-# 搜索文章
-@api.route("/api/article/search",method="POST")
-def article():
-	reqdata=json.get()
-	if checklogin(reqdata["token"]):
-		returndata={"success":1,"data":[]}
-		for i in reqdata["articleidarray"]:
-			sqldata = cur.execute("select * from article where articleid= ?",i)
-			tmpdata=dict(sqldata)
-			returndata["data"].append(tmpdata)
-		return jsonify(returndata)
-	else:
 		return jsonify({"success":0,"msg":"请登录"})
