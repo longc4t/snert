@@ -144,8 +144,8 @@ def addcomment():
     if checklogin(reqdata["token"]):
         try:
             db, cur = get_db()
-            cur.execute("INSERT INTO Persons VALUES (?, ?, ?, ?)", reqdata["commentauthor"],
-                           reqdata["commentauthorid"], reqdata["commentcontent"], reqdata["commenttimestamp"])
+            cur.execute("INSERT INTO Persons VALUES (?, ?, ?, ?)", [reqdata["commentauthor"],
+                           reqdata["commentauthorid"], reqdata["commentcontent"], reqdata["commenttimestamp"]])
             db.commit()
             cur.close()
             db.close()
@@ -167,7 +167,7 @@ def send_article():
     if checklogin(reqdata["token"]):
         db, cur = get_db()
         try:
-            cur.execute("INSERT INTO Persons VALUES (?, ?, ?, ?)",reqdata["article_author"],reqdata["article_authorid"], reqdata["article_content"], reqdata["article_timestamp"])
+            cur.execute("INSERT INTO Persons VALUES (?, ?, ?, ?)",[reqdata["article_author"],reqdata["article_authorid"], reqdata["article_content"], reqdata["article_timestamp"]])
             db.commit()
             cur.close()
             db.close()
@@ -208,7 +208,7 @@ def articleshow():
     if checklogin(reqdata["token"]):
         returndata={"success":1,"data":[]}
         for i in reqdata["articleidarray"]:
-            sqldata = cur.execute("(select * from article desc articletimestamp limit ?*3,?*3+3),?",i)
+            sqldata = cur.execute("select * from article desc articletimestamp limit ?,?",[i,i*3+3])
             tmpdata=dict(sqldata)
             returndata["data"].append(tmpdata)
         return jsonify(returndata)
