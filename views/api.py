@@ -105,6 +105,7 @@ def register():
     cur.close()
     db.close()
 
+# 文章分页显示
 @app.route("/api/article/index",method="POST")
 def article():
 	reqdata=json.get()
@@ -118,7 +119,7 @@ def article():
 	else:
 		return jsonify({"success":0,"msg":"请登录"})
 
-
+# 添加文章
 @app.route("/api/article/add",method="POST")
 def send_article():
 	reqdata=json.get()
@@ -134,7 +135,7 @@ def send_article():
 	else:
 		return jsonify({"success": 0, "msg": "请登录"})
 
-
+# 搜索文章
 @app.route("/api/article/search",method="POST")
 def article():
 	reqdata=json.get()
