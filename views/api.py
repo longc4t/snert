@@ -1,4 +1,4 @@
-from config import Blueprint,json,request,app
+from config import *
 api = Blueprint('api', __name__)
 
 
@@ -119,6 +119,7 @@ def article():
 	else:
 		return jsonify({"success":0,"msg":"请登录"})
 
+	
 # 添加文章
 @api.route("/api/article/add",method="POST")
 def send_article():
@@ -135,6 +136,7 @@ def send_article():
 	else:
 		return jsonify({"success": 0, "msg": "请登录"})
 
+	
 # 搜索文章
 @api.route("/api/article/search",method="POST")
 def article():
