@@ -162,31 +162,41 @@ def addcomment():
 
 
 # 添加文章
-@api.route("/api/article/add",method="POST")
+@api.route("/api/article/add",methods=["POST"])
 def send_article():
     reqdata=json.get()
     if checklogin(reqdata["token"]):
+        db, cur = get_db()
         try:
             cur.execute("INSERT INTO Persons VALUES (?, ?, ?, ?)",reqdata["article_author"],reqdata["article_authorid"], reqdata["article_content"], reqdata["article_timestamp"])
-   
+            db.commit()
+            cur.close()
+            db.close()
             return jsonify({"success": 1, "msg": "发送成功"})
 
         except:
+            db.commit()
+            cur.close()
+            db.close()
             return jsonify({"success": 0, "msg": "发送失败"})
 
     else:
         return jsonify({"success": 0, "msg": "请登录"})
 
 # 搜索文章
-@api.route("/api/article/search",method="POST")
+@api.route("/api/article/search",methods=["POST"])
 def article():
     reqdata=json.get()
     if checklogin(reqdata["token"]):
         returndata={"success":1,"data":[]}
+        db, cur = get_db()
         for i in reqdata["articleidarray"]:
             sqldata = cur.execute("select * from article where articleid= ?",i)
             tmpdata=dict(sqldata)
             returndata["data"].append(tmpdata)
+        db.commit()
+        cur.close()
+        db.close()
         return jsonify(returndata)
     else:
         return jsonify({"success":0,"msg":"请登录"})
@@ -205,6 +215,35 @@ def article():
 	else:
 		return jsonify({"success":0,"msg":"请登录"})
 
-	
-
-		return jsonify({"success":0,"msg":"请登录"})
+#修改个人信息
+@api.route("api/user/change",method="POST")
+def change():
+    reqdata = json.get()
+    if checklogin(reqdata["token"]):
+        db, cur = get_db()
+        cursor = cur.execute("SELECT personsay,username,password,token FROM user WHERE userid= ?", reqdata['userid'])
+        users = dict(cursor)
+        if (not reqdata['oldpassword'] or not reqdata['newpassword']):
+            token = generate_token(users['username'], reqdata['newpassword'])
+            conn.execute("UPDATE user SET personsay=? WHERE userid=?", reqdata['personsay'], reqdata['userid'])
+            conn.execute("UPDATE user SET token=? WHERE userid=?", token, reqdata['userid'])
+            conn.commit()
+            cur.close()
+            db.close()
+            return jsonify({"success": 1, "token": users['token'], "msg": "修改成功"})
+        elif reqdata['oldpassword'] != users['password']:
+            token = generate_token(users['username'], reqdata['newpassword'])
+            conn.execute("UPDATE user SET password=? WHERE userid=?", reqdata['newpassword'], reqdata['userid'])
+            conn.execute("UPDATE user SET personsay=? WHERE userid=?", reqdata['personsay'], reqdata['userid'])
+            conn.execute("UPDATE user SET token=? WHERE userid=?", token, reqdata['userid'])
+            conn.commit()
+            cur.close()
+            db.close()
+            return jsonify({"success": 1, "token": token, "msg": "修改成功"})
+        else:
+            conn.commit()
+            cur.close()
+            db.close()
+            return jsonify({"success": 0, "token": "", "msg": "密码不正确"})
+    else:
+        return jsonify({"success": 0, "token": "", "msg": "鉴权失败"})
