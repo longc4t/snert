@@ -41,3 +41,8 @@ def detailspage():
 @user.route("/login.html")
 def loginpage():
     return app.send_static_file("html/login.html")
+
+@user.route("/user")
+@user.route("/user.html")
+def userpage():
+    return app.send_static_file("html/user.html")
