@@ -84,7 +84,7 @@
 ```json
 {
     "username":"Z3Vlc3Q=",
-    "password": "MTIzNDU2",
+    "password": "MTIzNDU2"
 }
 ```
 
@@ -122,7 +122,7 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
 ```json
 {
     "username":"Z3Vlc3Q=",
-    "password": "MTIzNDU2",
+    "password": "MTIzNDU2"
 }
 ```
 
@@ -319,19 +319,19 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
    		"commentauthor":"Z3Vlc3Q=",
         "commentauthorid":"123",
    		"commentcontent":"5YaF5a655Zyo6L+Z6YeM",
-   		"commenttimestamp":"1556464204",
+   		"commenttimestamp":"1556464204"
     },{
     	"commentid" : "11",
    		"commentauthor":"Z3Vlc3Q=",
         "commentauthorid":"123",
    		"commentcontent":"5YaF5a655Zyo6L+Z6YeM",
-   		"commenttimestamp":"1556464204",
+   		"commenttimestamp":"1556464204"
     },{
     	"commentid" : "11",
    		"commentauthor":"Z3Vlc3Q=",
         "commentauthorid":"123",
    		"commentcontent":"5YaF5a655Zyo6L+Z6YeM",
-   		"commenttimestamp":"1556464204",
+   		"commenttimestamp":"1556464204"
     }]
 }
 ```
@@ -383,7 +383,7 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
     "token":"e6c43826c85c78644a6c97ec6205ab0b",
 	"oldpassword":"MTIzNDU2",
     "newpassword":"OTYzLjEyMw==",
-    "personsay":"6L+Z5piv5Liq5oCn562+5ZCN",
+    "personsay":"6L+Z5piv5Liq5oCn562+5ZCN"
 }
 ```
 
@@ -415,7 +415,7 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
 
 ```json
 {
-    "userid":"132"
+    "userid":"132",
     "token":"e6c43826c85c78644a6c97ec6205ab0b"
 }
 ```
@@ -424,7 +424,7 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
 
 ```json
 {
-    "userid":"132"
+    "userid":"132",
 	"username":"Z3Vlc3Q=",
     "userarticle":[11,335,520],
     "usercomment":[20,52,95]
