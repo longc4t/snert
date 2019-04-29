@@ -18,7 +18,6 @@ def generate_token(username, password):
     return token
 
 
-
 #连接数据库
 def get_db():
     db = sqlite3.connect(app.config['DATABASE'])
@@ -26,6 +25,20 @@ def get_db():
     return db, cur
 
 
+#装饰器
+def checklogin(token):
+    conn, cursor = get_db()
+    tokens = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    for i in tokens:
+        if token == i:
+            # Already logged in
+            return True
+        else:
+            pass
+    # Not logged in
+    return False
 
 #发送json数据至前端
 def send_json(num,token):
