@@ -9,6 +9,7 @@ from conn import  *
 
 app = Flask(__name__,static_url_path='')
 
+
 def getjson():
     return json.loads(request.get_data().decode("utf-8"))
 
@@ -24,15 +25,18 @@ def indexpage():
 def aboutpage():
     return app.send_static_file("html/about.html")
 
+
 @app.route("/comment")
 @app.route("/comment.html")
 def commentpage():
     return app.send_static_file("html/comment.html")
 
+
 @app.route("/message")
 @app.route("/message.html")
 def messagepage():
     return app.send_static_file("html/message.html")
+
 
 @app.route("/details")
 @app.route("/details.html")
@@ -40,3 +44,7 @@ def detailspage():
     return app.send_static_file("html/details.html")
 
 
+@app.route("/login")
+@app.route("/login.html")
+def loginpage():
+    return app.send_static_file("html/login.html")
