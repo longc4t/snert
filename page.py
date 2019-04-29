@@ -16,8 +16,28 @@ def getjson():
 
 @app.route("/")
 @app.route("/index.html")
-@app.route("/default.html")
-def index():
-    return render_template("default.html")
+def indexpage():
+    return render_template("index.html")
+
+
+@app.route("/about")
+@app.route("/about.html")
+def aboutpage():
+    return render_template("about.html")
+
+@app.route("/comment")
+@app.route("/comment.html")
+def commentpage():
+    return render_template("comment.html")
+
+@app.route("/message")
+@app.route("/message.html")
+def messagepage():
+    return render_template("message.html")
+
+@app.route("/details")
+@app.route("/details.html")
+def detailspage():
+    return render_template("details.html")
 
 
