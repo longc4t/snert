@@ -6,7 +6,7 @@ from contextlib import closing
 from flask import Flask
 from flask import request
 from flask import jsonify
-from token.py import generate_token
+from token import generate_token
 
 app = Flask(__name__)
 
