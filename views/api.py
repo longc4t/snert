@@ -27,11 +27,12 @@ def get_db():
 
 #装饰器
 def checklogin(token):
-    conn, cur = get_db()
-    cursor = cur.execute("SELECT token from users")
+    db, cur = get_db()
+    cursor = cur.execute("SELECT token FROM users WHERE username = ?")
+    db.commit()
     tokens = cursor.fetchall()
     cursor.close()
-    conn.close()
+    db.close()
     for i in tokens:
         if token == i:
             # Already logged in
