@@ -22,9 +22,10 @@ class user(object):
 
     def login(self,username,password):
         value=self.cur.select(field=("*"),tablename="user",selectkey="username",selectvalue=username)
+        print(value)
         if len(value)>0:
             if password in value[0]:
-                return jsonify({"success":1,"msg":"登录成功～"})
+                return jsonify({"success":1,"msg":"登录成功～","token":value[0][3]})
             else:
                 return jsonify({"success":0,"msg":"登录失败～"})
         else:
