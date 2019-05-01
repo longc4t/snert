@@ -90,7 +90,7 @@ def login():
     
     
 #注册
-@api.route('/reg', methods=['POST','GET'])
+@api.route('/register', methods=['POST','GET'])
 def register():
     token = ""
     try:
