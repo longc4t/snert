@@ -21,11 +21,14 @@ class user(object):
             return jsonify({"success":1,"msg":"注册成功~","token":token})
 
     def login(self,username,password):
-        value=self.cur.select(field=("*"),tablename="user",selectvalue=username)
-        if password in value:
-            return jsonify({"success":1,"msg":"登录成功～"})
+        value=self.cur.select(field=("*"),tablename="user",selectkey="username",selectvalue=username)
+        if len(value)>0:
+            if password in value[0]:
+                return jsonify({"success":1,"msg":"登录成功～"})
+            else:
+                return jsonify({"success":0,"msg":"登录失败～"})
         else:
-            return jsonify({"success":0,"msg":"登录失败～"})
+            return jsonify({"success":0,"msg":"未找到该账户，请先注册!"})
 
     def generate_token(self,username, password):
         key = "{0}|{1}".format(username, password)
