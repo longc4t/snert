@@ -1,3 +1,4 @@
+layer = layui.layer
 if (Cookies.get('token')){
     $(".personal")[0].href="/user"
 }else {
