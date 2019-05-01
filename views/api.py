@@ -104,15 +104,15 @@ def register():
                 'SELECT * FROM users WHERE username = ?', [username])
 
             if x.fetchall():
-                send_json(0,token)
+                send_json(0, token)
             else:
-                token = generate_token(username,password)
+                token = generate_token(username, password)
                 personsay = "这个家伙很懒，什么也没留下~"
-                cur.execute("INSERT INTO users (username, password，token,personsay) VALUES(?,?,?,?)", [
-                            username, password,token,personsay])
+                cur.execute("INSERT INTO users (username, password, token, personsay) VALUES(?,?,?,?)", [
+                            username, password, token, personsay])
                 send_json(1, token)
     except:
-        send_json(-1,token)
+        send_json(-1, token)
     db.commit()
     cur.close()
     db.close()
