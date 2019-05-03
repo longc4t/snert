@@ -1,0 +1,39 @@
+.center {
+    text-align: center;
+}
+
+.layui-nav-tree .layui-nav-item a {
+    position: relative;
+    height: 100px;
+    line-height: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+/*错误信息返回*/
+.errorMsg {
+    color: red;
+}
+
+.error {
+    border: 1px solid red;
+}
+
+.password-input {
+    width: 400px;
+    hight: 25px ！importent;
+    margin-top: 5px;
+}
+
+.text-input{
+    width: 800px;
+    hight: 25px ！importent;
+    margin-top: 5px;
+}
+
+.btn {
+    vertical-align: middle;
+    text-align: center;
+    margin-top: 30px;
+    width: 50%;
+}
