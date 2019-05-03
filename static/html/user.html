@@ -58,9 +58,8 @@
         <div class="layui-row">
             <div class="layui-col-md3">
                 <ul class="layui-nav layui-nav-tree layui-bg-blue" lay-filter="test">
-                    <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
-                    <li class="layui-nav-item"><a href="#changeuserdata">修改个人资料</a></li>
-                    <li class="layui-nav-item"><a href="#newarticle">发布文章</a></li>
+                    <li class="layui-nav-item"><a onclick="$('#changeuserdata').click()">修改个人资料</a></li>
+                    <li class="layui-nav-item"><a onclick="javascript:$('#newarticle').click()">发布文章</a></li>
                 </ul>
             </div>
             <!--右边编辑栏-->
@@ -72,110 +71,69 @@
                     </ul>
                     <div class="layui-tab-content">
                         <div class="layui-tab-item layui-show">
-                            <!--密码修改-->
-                            <div>
-                                <label>当前密码</label></br>
-                                <input type="password" class="password-input" id="current_password"
-                                       name="current_password" placeholder="当前密码">
-                                &nbsp;<span id="currentMsg" class="errorMsg"></span>
-                            </div>
-                            <div style="margin-top: 15px;">
-                                <label>新密码</label></br>
-                                <input type="password" class="password-input" id="new_password" name="new_password"
-                                       placeholder="新密码不能当前密码相同">
-                                &nbsp;<span id="newMsg" class="errorMsg"></span>
-                            </div>
-                            <div style="margin-top: 15px;">
-                                <label>确认密码</label></br>
-                                <input type="password" class="password-input" id="confirmation_password"
-                                       name="confirmation_password" placeholder="确认密码与新密码保持一致">
-                                &nbsp;<span id="confirmMsg" class="errorMsg"></span>
-                            </div>
-                            <div style="margin-top: 15px;">
-                                <label>个性签名</label></br>
-                                <input type="text" class="text-input" id="personalized_signature"
-                                       name="personalized_signature" placeholder="个性签名，小于40个字符">
-                                &nbsp;<span id="personMsg" class="errorMsg"></span>
-                            </div>
-                            <div class="btn">
-                                <input type="reset" value="重置" onclick="clearInput();"></i> &nbsp;
-                                <input type="button" value="修改密码" onclick="checkInput();"></i>
+                            <div class="layui-form">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">当前密码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="password" id="current_password" required lay-verify="required"
+                                               placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">请输入当前密码</div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">新密码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="password" id="new_password" required lay-verify="required"
+                                               placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">新密码不能当前密码相同</div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">确认密码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="password" id="confirmation_password" required lay-verify="required"
+                                               placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">确认密码与新密码保持一致</div>
+                                </div>
+                                <div class="layui-form-item layui-form-text">
+                                    <label class="layui-form-label">个性签名</label>
+                                    <div class="layui-input-block">
+                                        <textarea name="desc" placeholder="请输入内容" id="personalized_signature"
+                                                  class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn" lay-submit lay-filter="formDemo"
+                                                onclick="changeuserinformation();">立即提交
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <!--密码修改js-->
-                        <script type="text/javascript">
-                            var flag = true;
-
-                            function clearInput() {
-                                $("#current_password").val("");
-                                $("#new_password").val("");
-                                $("#confirmation_password").val("");
-                                $("#personalized_signature").val("");
-                                clearErrorMsg();
-                            }
-
-                            function clearErrorMsg() {
-                                $("#currentMsg").html("");
-                                $("#newMsg").html("");
-                                $("#confirmMsg").html("");
-                                $("#personMsg").html();
-                                $("#current_password").removeClass("error");
-                                $("#new_password").removeClass("error");
-                                $("#confirmation_password").removeClass("error");
-                                $("#personalized_signature").removeClass("error");
-                            }
-
-                            function checkInput() {
-                                clearErrorMsg();
-                                var currentPassword = $("#current_password").val();
-                                var newPassword = $("#new_password").val();
-                                var confirmPassword = $("#confirmation_password").val();
-                                var personsignature = $("#personalized_signature").val();
-
-                                checkPwdLength(currentPassword, "currentMsg", "current_password");
-                                checkPwdLength(newPassword, "newMsg", "new_password");
-                                checkPwdLength(confirmPassword, "confirmMsg", "confirmation_password");
-                                checkPwdLength(personsignature, "personMsg", "personalized_signature");
-
-                                if (flag) {
-                                    $.post("/api/user/change", JSON.stringify({
-                                        "token": Cookies.get('token'),
-                                        "oldpassword": btoa($("#current_password").val()),
-                                        "newpassword": btoa($("#new_password").val()),
-                                        "personsay": btoa($("#personalized_signature").val())
-                                    }), function (data) {
-                                        if ("success" == data) {
-                                            alert("密码修改成功，请使用新密码重新登陆！");
-                                            window.location.href = "/api/login";
-                                        } else {
-                                            $("#currentMsg").html(data);
-                                            $("#current_Password").addClass("error");
-                                        }
-                                    });
-                                }
-                            }
-
-                            function checkPwdLength(obj, msg, id) {
-                                if ("" == obj) {
-                                    $("#" + msg).html("该项不能为空！");
-                                    $("#" + id).addClass("error");
-                                    flag = false;
-                                } else if ($("#current_password").val() == $("#new_password").val()) {
-                                    $("#newMsg").html("新密码不能当前密码相同！");
-                                    flag = false;
-                                } else if ($("#new_password").val() != $("#confirmation_password").val()) {
-                                    $("#confirmMsg").html("两次输入的密码不一致！");
-                                    flag = false;
-                                } else if ($("#personalized_signature").val().length > 42) {
-                                    $("#personMsg").html("很个性，就是有点长");
-                                    flag = false;
-                                } else {
-                                    flag = true;
-                                }
-                            }
-                        </script>
-
-                        <div class="layui-tab-item">发布文章</div>
+                        <div class="layui-tab-item">
+                            <div class="layui-form">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">文章标题</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" id="title" required lay-verify="required"
+                                               placeholder="请输入文章标题" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">请输入文章标题</div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <textarea id="demo" style="display: none;"></textarea>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn" lay-submit lay-filter="formDemo"
+                                                onclick="uploadarticle();">立即提交
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -190,10 +148,4 @@
 <script src="/static/js/cookie.js" type="text/javascript"></script>
 <script src="/static/js/main.js" type="text/javascript"></script>
 </body>
-<script>
-    //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
-    layui.use('element', function () {
-        var element = layui.element;
-    });
-</script>
 </html>

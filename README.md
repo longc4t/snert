@@ -267,7 +267,6 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
 {
     "articletitle":"6L+Z5piv5paH56ug5qCH6aKY",
    	"articleauthor":"Z3Vlc3Q=",
-    "articleauthorid":"123",
    	"articlecontent":"5YaF5a655Zyo6L+Z6YeM",
    	"articletimestamp":"1556464204",
     "token":"e6c43826c85c78644a6c97ec6205ab0b"
@@ -402,7 +401,7 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
 ```
 {
     "success":1,
-    "token":"e6c43826c85c78644a6c97ec6205ab0b",
+    "token":"",
     "msg":"修改失败/原密码错误"
 }
 ```
@@ -415,8 +414,13 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
 
 ```json
 {
-    "userid":"132",
-    "token":"e6c43826c85c78644a6c97ec6205ab0b"
+    "userid":"132"
+}
+```
+或者
+```json
+{
+    "token":"1xxxxxxxxxxxxxx32"
 }
 ```
 
@@ -424,10 +428,10 @@ username和password我会用base64传输`Z3Vlc3Q=` 即为用户guest，`MTIzNDU2
 
 ```json
 {
-    "userid":"132",
 	"username":"Z3Vlc3Q=",
     "userarticle":[11,335,520],
-    "usercomment":[20,52,95]
+    "usercomment":[20,52,95],
+    "personsay":"xxxxxxxx"
 }
 ```
 
