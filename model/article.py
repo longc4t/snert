@@ -19,11 +19,10 @@ class article(object):
         articleauthorid = self.user.getuserid(articleauthor)
         self.cur.insert(tablename="article", insertvalue=(
             articleid, articletitle, articleauthor, articleauthorid, articlecontent, articletimestamp, commentid))
-        self.user.addarticle(articleid=articleid,userid=articleauthorid)
         return jsonify({"success": 1, "msg": "添加成功"})
 
     def getarticle(self):
-        data = self.cur.show()
+        data = self.cur.showarticle()
         jsonformatstring = {"success": 1,"count":len(data), "data": []}
         for i in data:
             jsonformatstring["data"].append({"articleid": i[0],
@@ -45,15 +44,3 @@ class article(object):
             "articletimestamp": articlevalue[5],
             "commentid": articlevalue[6],
         }})
-
-    def getcomment(self,articleid):
-        comment = self.cur.select(
-            field=("commentid"), tablename="article", selectkey="articleid",
-            selectvalue=articleid)[0]
-        return comment
-
-    def addcomment(self, commentid, articleid):
-        comment = eval(self.getcomment(articleid=articleid))
-        comment.append(commentid)
-        self.cur.update(tablename="article", keymap={"commentid", str(comment)}, updatekey="articleid",
-                        updatevalue=articleid)

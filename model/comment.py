@@ -16,22 +16,18 @@ class comment(object):
         commentid = hashlib.md5(b64_key).hexdigest()
         return commentid
 
-    def insertcomment(self, commentauthor, commentcontent, commenttimestamp, articleid):
+    def insertcomment(self, commentauthor, commentcontent, commenttimestamp):
         commentid = self.getcommentid(commentauthor=commentauthor, commenttimestamp=commenttimestamp)
         commentauthorid = self.user.getuserid(username=commentauthor)
         self.cur.insert(tablename="comment",
                         insertvalue=(commentid, commentauthor, commentauthorid, commentcontent, commenttimestamp))
-        self.user.addcomment(commentid=commentid, userid=commentauthorid)
-        self.article.addcomment(commentid=commentid, articleid=articleid)
 
-        return jsonify({"success":1,"msg":"添加成功"})
+        return jsonify({"success": 1, "msg": "添加成功"})
 
-    def getcomment(self, commentarray):
-        tmpdata = []
-        for i in commentarray:
-            commentdata = self.cur.select(field=("*"), tablename="comment", selectkey="commentid", selectvalue=i)[0]
-            if commentdata:
-                tmpdata.append(
-                    {"commentid": commentdata[0], "commentauthor": commentdata[1], "commentauthorid": commentdata[2],
-                     "commentcontent": commentdata[3], "commenttimestamp": commentdata[4]})
-        return tmpdata
+    def getcomment(self):
+        commentdata = self.cur.showcomment()
+        jsonformatstring = {"success": 1, "count": len(commentdata), "data": []}
+        for i in commentdata:
+            jsonformatstring["data"].append({"commentid": i[0], "commentauthor": i[1], "commentauthorid": i[2],
+                                             "commentcontent": i[3], "commenttimestamp": i[4]})
+        return jsonify(jsonformatstring)

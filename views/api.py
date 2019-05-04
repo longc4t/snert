@@ -1,4 +1,4 @@
-from config import Blueprint, json, request, jsonify
+from config import Blueprint, json, request, jsonify,jinja2
 from model.user import user
 from model.article import article
 from model.comment import comment
@@ -49,7 +49,7 @@ def change():
 def getuserinfo():
     userdata = getjson()
     userobj = user()
-    if "userid" in userdata.keys():
+    if "userid" in userdata:
         return userobj.getuserinfobyid(userdata["userid"])
     else:
         return userobj.getuserinfobytoken(userdata["token"])
@@ -113,6 +113,14 @@ def searchcomment():
     userdata = getjson()
     commentobj = comment()
     if checklogin(userdata["token"]):
-        return jsonify({"success": 1, "data": commentobj.getcomment(userdata["commentidarrary"])})
+        return jsonify({"success": 1, "data": commentobj.getcomment()})
     else:
         return jsonify({"success": 0, "msg": "请登录"})
+
+@api.route("/404/getusername",methods=["post","get"])
+def notfoundpage():
+    userdata = getjson()
+    userobj = user()
+    username = userobj.getusernamebytokenfor404(userdata['token'])
+    return jinja2.Environment().from_string("{'success':1,'username':'" +username+"'}").render()
+

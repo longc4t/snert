@@ -129,22 +129,37 @@ layui.define(['element', 'form','laypage','jquery','laytpl'],function(exports){
     var view = $('#LAY-msg-tpl').html()
 
     //模拟数据
-    ,data = {
-      username: '闲心'
-      ,avatar: 'static/images/info-img.png'
-      ,praise: 0
-      ,content: content
-    };
 
-    //模板渲染
-    laytpl(view).render(data, function(html){
-      $('#LAY-msg-box').prepend(html);
-      elemCont.val('');
-      layer.msg('留言成功', {
-        icon: 1
-      })
+    $.post("/api/user/getinfo", JSON.stringify({"token":Cookies.get("token")}), function (data) {
+            if (data.success) {
+                user=data.username
+                $.post("/api/comment/add",JSON.stringify({"commentauthor":btoa(user),"commentcontent":btoa(content),"commenttimestamp":""+new Date().getTime(),"token":Cookies.get('token')}),function (results){
+                        if(results.success){
+                            laytpl(view).render({username:unescape(atob(user)).replace("&lt;","<").replace("&gt;",">"),
+                                                  avatar: 'static/images/info-img.png',
+                                                  praise: 0,
+                                                  content: content
+                                                }, function(html){
+                              $('#LAY-msg-box').prepend(html);
+                              elemCont.val('');
+                              layer.msg('留言成功', {
+                                icon: 1
+                              })
+                            });
+                        }else{
+                            layer.alert(results.msg, {
+                                icon: 2,
+                                skin: 'layer-ext-moon'
+                            })
+                        }
+                },"json");
+            } else {
+                layer.alert("网络错误", {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                });
+            }
     });
-
   })
 
   // start  图片遮罩

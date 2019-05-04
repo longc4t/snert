@@ -8,7 +8,7 @@ class sqlop:
         self.sql = ""
 
     def select(self, field=(), tablename="", selectkey="", selectvalue=""):
-        tmpfield = "*" if "*" in field else ",".join(field)
+        tmpfield = "*" if "*" in field else (field if len(field)<1 else ",".join(field))
         self.sql = "select {field} from {tablename} WHERE {selectkey}= '{selectvalue}'".format(field=tmpfield,
                                                                                                tablename=tablename,
                                                                                                selectkey=selectkey,
@@ -19,10 +19,10 @@ class sqlop:
         return values
 
     def update(self, tablename="", keymap={}, updatekey="", updatevalue=""):
-        setstring = ""
-        for i in keymap:
-            setstring += i + "='" + keymap[i] + "'" + ","
-        setstring = setstring[:-1]
+        setstring = []
+        for key,value in keymap.items():
+            setstring.append("{key}='{value}'".format(key=key,value=value))
+        setstring = ",".join(setstring)
         self.sql = "update {tablename} set {setstring} where {updatekey}='{updatevalue}'".format(tablename=tablename,
                                                                                                  setstring=setstring,
                                                                                                  updatekey=updatekey,
@@ -37,8 +37,15 @@ class sqlop:
         self.cursor.execute(self.sql)
         self.conn.commit()
 
-    def show(self):
+    def showarticle(self):
         self.sql = "select * from article order by `articletimestamp` desc"
+        print(self.sql)
+        self.cursor.execute(self.sql)
+        values = self.cursor.fetchall()
+        return values
+
+    def showcomment(self):
+        self.sql = "select * from comment order by `commenttimestamp` desc"
         print(self.sql)
         self.cursor.execute(self.sql)
         values = self.cursor.fetchall()

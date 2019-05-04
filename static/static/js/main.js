@@ -39,7 +39,6 @@ layui.use(['element','layer','layedit','laypage'], function () {
             comlaypage=laypage;
             getarticle();
             getdetail();
-            getcommentarticle();
         }else{
             if(window.location.href.indexOf("/login")==-1){
                 window.location.href="/login"
@@ -180,60 +179,6 @@ function getuserdata(){
     }
 }
 
-
-/*
-
-
-function getcomment() {
-    $.post("/api/comment/search",JSON.stringify({"commentidarrary":idarrary,"token":Cookies.get('token')}),function (results){
-            if(results.success){
-                layer.alert(results.msg, {
-			        icon: 1,
-			        skin: 'layer-ext-moon'
-		        })
-		        //window.location.href="/"
-            }else{
-                layer.alert(results.msg, {
-                    icon: 2,
-                    skin: 'layer-ext-moon'
-                })
-            }
-        },"json");
-}
-
-*/
-function getcommentarticle(){
-    if(window.location.href.indexOf("comment") !=-1){
-        articleid=GetQueryString("id")
-        $.post("/api/article/search", JSON.stringify({"articleid":articleid,"token":Cookies.get("token")}), function (data) {
-            if (data.success) {
-                item=data.data
-                html="<div class=\"item\"><div class=\"item-box  layer-photos-demo1 layer-pho" +
-                                    "tos-demo\"><h3><a href=\"details.html?id="
-                                    +item["articleid"]
-                                    +"\">"
-                                    +unescape(atob(item["articletitle"])).replace("&lt;","<").replace("&gt;",">")
-                                    +"</a></h3>"+"<h5>发布于：<span>"
-                                    +new Date(item["articletimestamp"]).toLocaleString()
-                                    +"</span></h5><p>"
-                                    +unescape(atob(item["articlecontent"])).replace("&lt;","<").replace("&gt;",">")
-                                    +"</p></div></div>".replace("&lt;strike&gt;","<strike>").replace("&lt;/strike&gt;","</strike>").replace("&lt;u&gt;","<u>").replace("&lt;/u&gt;","</u>").replace("&lt;br&gt;","<br>").replace("&lt;b&gt;","<b>").replace("&lt;/b&gt;","</b>");
-                $("#detailcontent").html(html)
-                $("#writecomment").attr("href","/comment.html?id="+item['articleid'])
-            } else {
-                layer.alert("网络错误", {
-                    icon: 2,
-                    skin: 'layer-ext-moon'
-                });
-            }
-        });
-
-
-    }
-
-}
-
-
 function getdetail(){
     if(window.location.href.indexOf("details") != -1){
         articleid=GetQueryString("id")
@@ -265,8 +210,6 @@ function getdetail(){
     }
 
 }
-
-
 
 function getarticle() {
     if($(".item-title > p:nth-child(1) > span:nth-child(2)").text()=="欢迎来到我的轻博客"){
@@ -337,7 +280,6 @@ function uploadarticle() {
     title=escape($("#title").val())
     content=escape(comlayedit.getContent(articleedit))
     timestamp=""+new Date().getTime()
-    username=""
     if (title=="" || content ==""){
         layer.alert("请填写完整", {
                     icon: 2,
@@ -345,40 +287,12 @@ function uploadarticle() {
         });
         return 0;
     }
-    $.post("/api/user/getinfo", JSON.stringify(datas), function (data) {
-            if (data.success) {
-                username=data.username
-            } else {
-                layer.alert("网络错误", {
-                    icon: 2,
-                    skin: 'layer-ext-moon'
-                });
-            }
-    });
-    $.post("/api/article/add",JSON.stringify({"articletitle":btoa(title),"articleauthor": username,"articlecontent":btoa(content),"articletimestamp":timestamp,"token":Cookies.get('token')}),function (results){
+    $.post("/api/article/add",JSON.stringify({"articletitle":btoa(title),"articleauthor":"","articlecontent":btoa(content),"articletimestamp":timestamp,"token":Cookies.get('token')}),function (results){
             if(results.success){
                 layer.alert(results.msg, {
 			        icon: 1,
 			        skin: 'layer-ext-moon'
 		        })
-            }else{
-                layer.alert(results.msg, {
-                    icon: 2,
-                    skin: 'layer-ext-moon'
-                })
-            }
-        },"json");
-}
-
-
-function uploadcomment(){
-    $.post("/api/comment/add",JSON.stringify({"commentauthor":btoa(author),"commentauthorid": commentid,"commentcontent":btoa(content),"commenttimestamp":timestamp,"token":Cookies.get('token')}),function (results){
-            if(results.success){
-                layer.alert(results.msg, {
-			        icon: 1,
-			        skin: 'layer-ext-moon'
-		        })
-		        //window.location.href="/"
             }else{
                 layer.alert(results.msg, {
                     icon: 2,
@@ -386,5 +300,4 @@ function uploadcomment(){
                 })
             }
     },"json");
-
 }
