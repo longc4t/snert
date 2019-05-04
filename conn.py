@@ -38,7 +38,7 @@ class sqlop:
         self.conn.commit()
 
     def show(self):
-        self.sql = "select * from article desc articletimestamp"
+        self.sql = "select * from article order by `articletimestamp` desc"
         print(self.sql)
         self.cursor.execute(self.sql)
         values = self.cursor.fetchall()

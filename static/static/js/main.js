@@ -1,4 +1,5 @@
 var comlayedit;
+var comlaypage;
 layui.use(['element','layer','layedit','laypage'], function () {
         var laypage = layui.laypage;
         var layedit = layui.layedit;
@@ -35,15 +36,8 @@ layui.use(['element','layer','layedit','laypage'], function () {
             ]});
             getuserdata();
             comlayedit=layedit;
-
-            if($(".item-title > p:nth-child(1) > span:nth-child(2)").text()=="欢迎来到我的轻博客"){
-                laypage.render({
-                    elem: 'demo2'
-                    ,count: 100
-                    ,theme: '#1E9FFF'
-                });
-
-            }
+            comlaypage=laypage;
+            getarticle();
         }else{
             window.location.href="/login"
         }
@@ -218,44 +212,72 @@ function getcomment() {
 }
 
 */
-
-function getarticle() {
-    if($(".item-title > p:nth-child(1) > span:nth-child(2)").text()=="欢迎来到我的轻博客"){
-        $.post("/api/article/index",JSON.stringify({"pagenum":num,"token":Cookies.get('token')}),function (results){
-        laypage.render({
-            elem: 'demo2'
-            ,count: 100
-            ,theme: '#1E9FFF'
+function getdetail(){
+    if(window.location.href.indexOf("details") != -1){
+        articleid=GetQueryString("id")
+        $.post("/api/article/search", JSON.stringify({"articleid":articleid,"token":Cookies.get("token")}), function (data) {
+            if (data.success) {
+                
+            } else {
+                layer.alert("网络错误", {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                });
+            }
         });
 
 
     }
 
-    $.post("/api/article/index",JSON.stringify({"pagenum":num,"token":Cookies.get('token')}),function (results){
-        if(results.success){
-            html="";
-            for (var i in results.data){
-                html+="<div class=\"item\"><div class=\"item-box  layer-photos-demo1 layer-pho" +
-                    "tos-demo\"><h3><a href=\"details.html?id="
-                    +results.data[i]["articleid"]
-                    +"\">"
-                    +atob(results.data[i]["articletitle"]).replace("<","&lt;").replace(">","&gt;")
-                    +"</a></h3>"+"<h5>发布于：<span>"
-                    +new Date(results.data[i]["articletimestamp"]*1000).toLocaleString()
-                    +"</span></h5><p>"
-                    +atob(results.data[i]["articlecontent"]).replace("<","&lt;").replace(">","&gt;")
-                    +"</p></div><div class=\"comment count\"><a href=\"details.html?id="
-                    +results.data[i]["commentid"]
-                    +"\">评论</a><a href=\"javascript:;\" class=\"like\">点赞</a></div></div>"
+}
+
+
+
+function getarticle() {
+    if($(".item-title > p:nth-child(1) > span:nth-child(2)").text()=="欢迎来到我的轻博客"){
+        $.post("/api/article/index",JSON.stringify({"token":Cookies.get('token')}),function (results){
+            if(results.success){
+                comlaypage.render({
+                    elem: 'demo2',
+                    count: results.count,
+                    limit:4,
+                    jump: function(obj){
+                        document.getElementById('articlecontainer').innerHTML = function(){
+                            var arr = []
+                            console.log(obj)
+                            thisData=results.data.concat().splice(obj.curr*obj.limit - obj.limit, obj.limit)
+                            layui.each(thisData, function(index, item){
+                              arr.push("<div class=\"item\"><div class=\"item-box  layer-photos-demo1 layer-pho" +
+                                    "tos-demo\"><h3><a href=\"details.html?id="
+                                    +item["articleid"]
+                                    +"\">"
+                                    +unescape(atob(item["articletitle"])).replace("&lt;","<").replace("&gt;",">")
+                                    +"</a></h3>"+"<h5>发布于：<span>"
+                                    +new Date(item["articletimestamp"]).toLocaleString()
+                                    +"</span></h5><p>"
+                                    +unescape(atob(item["articlecontent"])).replace("&lt;","<").replace("&gt;",">")
+                                    +"</p></div><div class=\"comment count\"><a href=\"details.html?id="
+                                    +item["articleid"]
+                                    +"\">评论</a><a href=\"javascript:;\" class=\"like\">点赞</a></div></div>");
+                            });
+                            return arr.join('').replace("&lt;strike&gt;","<strike>").replace("&lt;/strike&gt;","</strike>").replace("&lt;u&gt;","<u>").replace("&lt;/u&gt;","</u>").replace("&lt;br&gt;","<br>").replace("&lt;b&gt;","<b>").replace("&lt;/b&gt;","</b>");
+                      }();
+                    }
+                });
+            }else{
+                layer.alert(results.msg, {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                })
             }
-            //window.location.href="/"
-        }else{
-            layer.alert(results.msg, {
-                icon: 2,
-                skin: 'layer-ext-moon'
-            })
-        }
-    },"json");
+        },"json");
+    }
+}
+
+function GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
 }
 
 

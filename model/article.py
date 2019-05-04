@@ -19,6 +19,7 @@ class article(object):
         articleauthorid = self.user.getuserid(articleauthor)
         self.cur.insert(tablename="article", insertvalue=(
             articleid, articletitle, articleauthor, articleauthorid, articlecontent, articletimestamp, commentid))
+        self.user.addarticle(articleid=articleid,userid=articleauthorid)
         return jsonify({"success": 1, "msg": "添加成功"})
 
     def getarticle(self):
@@ -34,13 +35,25 @@ class article(object):
         return jsonify(jsonformatstring)
 
     def getdetail(self, articleid):
-        value = self.cur.select(field=("*"), tablename="article", selectkey="articleid", selectvalue=articleid)
+        articlevalue = self.cur.select(field=("*"), tablename="article", selectkey="articleid", selectvalue=articleid)
         return jsonify({"success": 1, "data": {
-            "articleid": value[0],
-            "articletitle": value[1],
-            "articleauthor": value[2],
-            "articleauthorid": value[3],
-            "articlecontent": value[4],
-            "articletimestamp": value[5],
-            "commentid": value[6]
+            "articleid": articlevalue[0],
+            "articletitle": articlevalue[1],
+            "articleauthor": articlevalue[2],
+            "articleauthorid": articlevalue[3],
+            "articlecontent": articlevalue[4],
+            "articletimestamp": articlevalue[5],
+            "commentid": articlevalue[6],
         }})
+
+    def getcomment(self,articleid):
+        comment = self.cur.select(
+            field=("commentid"), tablename="article", selectkey="articleid",
+            selectvalue=articleid)[0]
+        return comment
+
+    def addcomment(self, commentid, articleid):
+        comment = eval(self.getcomment(articleid=articleid))
+        comment.append(commentid)
+        self.cur.update(tablename="article", keymap={"commentid", str(comment)}, updatekey="articleid",
+                        updatevalue=articleid)

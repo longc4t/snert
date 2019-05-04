@@ -44,12 +44,37 @@ class user(object):
         userid = hashlib.md5(b64_key).hexdigest()
         return userid
 
+    def addarticle(self, articleid, userid):
+        userarticle = eval(self.getuserarticle(userid=userid))
+        userarticle.append(articleid)
+        self.cur.update(tablename="user", keymap={"userarticle", str(userarticle)}, updatekey="userid",
+                        updatevalue=userid)
+
+    def addcomment(self, commentid, userid):
+        usercomment = eval(self.getusercomment(userid=userid))
+        usercomment.append(commentid)
+        self.cur.update(tablename="user", keymap={"usercomment", str(usercomment)}, updatekey="userid",
+                        updatevalue=userid)
+
+
     def getuserinfobyid(self, userid):
         username, personsay, article, comment = self.cur.select(
             field=("username", "personsay", "userarticle", "usercomment"), tablename="user", selectkey="userid",
             selectvalue=userid)[0]
         return jsonify(
             {"success": 1, "username": username, "personsay": personsay, "articleid": article, "commentid": comment})
+
+    def getuserarticle(self, userid):
+        article = self.cur.select(
+            field=("userarticle"), tablename="user", selectkey="userid",
+            selectvalue=userid)[0]
+        return article
+
+    def getusercomment(self, userid):
+        comment = self.cur.select(
+            field=("usercomment"), tablename="user", selectkey="userid",
+            selectvalue=userid)[0]
+        return comment
 
     def getuserinfobytoken(self, token):
         username, personsay, article, comment = self.cur.select(
