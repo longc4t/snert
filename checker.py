@@ -51,7 +51,11 @@ def check2(url):
 def check3(url):
     try:
         global username,token
-
+        commentpage = "{domain}{path}".format(domain=url, path="/api/comment/add")
+        data = requests.post(commentpage, json={"commentcontent": "Y2hlY2t0ZXN0", "commentauthor": username,
+                                               "commenttimestamp": str(int(time.time() * 1000)),
+                                               "token": token}).json()
+        return True if data["success"] else False
     except Exception as e:
         print("checker 3 err")
     return True
@@ -61,7 +65,7 @@ def check3(url):
 def checker(host, port):
     try:
         url = "http://" + host + ":" + str(port)
-        if check1(url) and check2(url):  # and check3(url):
+        if check1(url) and check2(url) and check3(url):
             return (True, "IP: " + host + " OK")
     except Exception as e:
         return (False, "IP: " + host + " is down, " + str(e))

@@ -19,7 +19,7 @@ class user(object):
             userid = self.getuserid(username)
             token = self.generate_token(username, password)
             self.cur.insert(tablename="user",
-                            insertvalue=(userid, username, password, token, "6L+Z5piv5Liq5oCn562+5ZCN", "[]", "[]"))
+                            insertvalue=(userid, username, password, token, "JXU4RkQ5JXU2NjJGJXU0RTJBJXU2MDI3JXU3QjdFJXU1NDBE", "[]", "[]"))
             return jsonify({"success": 1, "msg": "注册成功~", "token": token})
 
     def login(self, username, password):

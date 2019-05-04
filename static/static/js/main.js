@@ -324,29 +324,31 @@ function uploadarticle() {
 }
 
 function searchcomment() {
-    $.post("/api/comment/search", JSON.stringify({
-        "token": Cookies.get('token')
-    }), function (data) {
-        if (data.success) {
-            item = data.data;
-            html="";
-            for(i in item) {
-                html += "<div class=\"info-item\"><img class=\"info-img\" src=\"/static/images/info-img.png\" alt=\"\">" +
-                    "<div class=\"info-text\"><p class=\"title count\"><span class=\"name\">" +
-                    atob(item[i]["commentauthor"]) +
-                    "</span><span class=\"info-img like\"><i class=\"layui-icon layui-icon-praise\">" +
-                    "</i>5.8万</span></p><p class=\"info-intr\">" +
-                    atob(item[i]["commentcontent"]) +
-                    "</div></div></div></div></div>".replace("&lt;strike&gt;", "<strike>").replace("&lt;/strike&gt;", "</strike>").replace("&lt;u&gt;", "<u>").replace("&lt;/u&gt;", "</u>").replace("&lt;br&gt;", "<br>").replace("&lt;b&gt;", "<b>").replace("&lt;/b&gt;", "</b>");
+    if(window.location.href.indexOf("message")!=-1){
+        $.post("/api/comment/search", JSON.stringify({
+            "token": Cookies.get('token')
+        }), function (data) {
+            if (data.success) {
+                item = data.data;
+                html="";
+                for(i in item) {
+                    html += "<div class=\"info-item\"><img class=\"info-img\" src=\"/static/images/info-img.png\" alt=\"\">" +
+                        "<div class=\"info-text\"><p class=\"title count\"><span class=\"name\">" +
+                        atob(item[i]["commentauthor"]) +
+                        "</span><span class=\"info-img like\"><i class=\"layui-icon layui-icon-praise\">" +
+                        "</i>5.8万</span></p><p class=\"info-intr\">" +
+                        atob(item[i]["commentcontent"]) +
+                        "</div></div></div></div></div>".replace("&lt;strike&gt;", "<strike>").replace("&lt;/strike&gt;", "</strike>").replace("&lt;u&gt;", "<u>").replace("&lt;/u&gt;", "</u>").replace("&lt;br&gt;", "<br>").replace("&lt;b&gt;", "<b>").replace("&lt;/b&gt;", "</b>");
+                }
+                console.log(html);
+                $("#newcomm").html(html)
+            }else {
+                layer.alert(results.msg, {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                })
             }
-            console.log(html);
-            $("#newcomm").html(html)
-        }else {
-            layer.alert(results.msg, {
-                icon: 2,
-                skin: 'layer-ext-moon'
-            })
-        }
-    });
+        });
+    }
 }
 
