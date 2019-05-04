@@ -77,8 +77,8 @@
 <script src="/static/js/main.js" type="text/javascript"></script>
 <script>
     $.post("/api/404/getusername", JSON.stringify({"token":Cookies.get("token")}), function (data) {
-        if (data.success) {
-            $("#notice").html("尊敬的"+data.username+"<br>你来到了没有东西的荒漠");
+        if (data) {
+            $("#notice").html(data);
         } else {
             layer.alert("网络错误", {
                 icon: 2,

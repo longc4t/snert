@@ -1,4 +1,4 @@
-from config import Blueprint, json, request, jsonify,jinja2
+from config import Blueprint, json, request, jsonify,jinja2,base64
 from model.user import user
 from model.article import article
 from model.comment import comment
@@ -122,5 +122,5 @@ def notfoundpage():
     userdata = getjson()
     userobj = user()
     username = userobj.getusernamebytokenfor404(userdata['token'])
-    return jinja2.Environment().from_string("{'success':1,'username':'" +username+"'}").render()
+    return jinja2.Environment().from_string("尊敬的"+str(base64.b64decode(username))[2:-1]+"<br>你来到了没有东西的荒漠").render()
 

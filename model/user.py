@@ -87,5 +87,5 @@ class user(object):
             return jsonify({"success": 0, "msg": "原密码错误"})
 
     def getusernamebytokenfor404(self,token):
-        return self.cur.select(field=("username",),tablename="user",selectkey="token",selectvalue=token)[0]
+        return self.cur.select(field=("username",),tablename="user",selectkey="token",selectvalue=token)[0][0]
 
