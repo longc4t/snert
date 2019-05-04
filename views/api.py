@@ -122,5 +122,6 @@ def notfoundpage():
     userdata = getjson()
     userobj = user()
     username = userobj.getusernamebytokenfor404(userdata['token'])
+    print(str(base64.b64decode(username))[2:-1])
     return jinja2.Environment().from_string("尊敬的"+str(base64.b64decode(username))[2:-1]+"<br>你来到了没有东西的荒漠").render()
 
