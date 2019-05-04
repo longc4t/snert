@@ -41,8 +41,11 @@ layui.use(['element','layer','layedit','laypage'], function () {
             getdetail();
             getcommentarticle();
         }else{
-            window.location.href="/login"
+            if(window.location.href.indexOf("/login")==-1){
+                window.location.href="/login"
+            }
         }
+
 });
 
 
