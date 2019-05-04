@@ -2,7 +2,6 @@
 import sys
 import random
 import requests
-import base64
 import time
 
 global token
@@ -12,7 +11,7 @@ mapa = "abcdefghijklmnopqrstuvwxyz"
 
 def check1(url):
     try:
-        global username,token
+        global username, token
         loginpage = "{domain}{path}".format(domain=url, path="/login")
         register = "{domain}{path}".format(domain=url, path="/api/register")
         checklogin = "{domain}{path}".format(domain=url, path="/api/checklogin")
@@ -37,11 +36,12 @@ def check1(url):
 
 def check2(url):
     try:
-        global username,token
+        global username, token
         addarticle = "{domain}{path}".format(domain=url, path="/api/article/add")
         data = requests.post(addarticle, json={"articletitle": "Y2hlY2t0ZXN0", "articleauthor": username,
-         "articlecontent": "Y2hlY2t0ZXN0", "articletimestamp": str(int(time.time() * 1000)),
-         "token": token}).json()
+                                               "articlecontent": "Y2hlY2t0ZXN0",
+                                               "articletimestamp": str(int(time.time() * 1000)),
+                                               "token": token}, timeout=3).json()
         return True if data["success"] else False
     except Exception as e:
         print("checker 3 err")
@@ -50,16 +50,15 @@ def check2(url):
 
 def check3(url):
     try:
-        global username,token
+        global username, token
         commentpage = "{domain}{path}".format(domain=url, path="/api/comment/add")
         data = requests.post(commentpage, json={"commentcontent": "Y2hlY2t0ZXN0", "commentauthor": username,
-                                               "commenttimestamp": str(int(time.time() * 1000)),
-                                               "token": token}).json()
+                                                "commenttimestamp": str(int(time.time() * 1000)),
+                                                "token": token}, timeout=3).json()
         return True if data["success"] else False
     except Exception as e:
         print("checker 3 err")
     return True
-
 
 
 def checker(host, port):

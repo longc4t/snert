@@ -119,7 +119,7 @@ def searchcomment():
         return jsonify({"success": 0, "msg": "请登录"})
 
 
-@api.route("/404/getusername",methods=["post","get"])
+@api.route("/404/getusername",methods=["post"])
 def notfoundpage():
     userdata = getjson()
     userobj = user()
