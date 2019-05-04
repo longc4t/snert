@@ -38,6 +38,8 @@ layui.use(['element','layer','layedit','laypage'], function () {
             comlayedit=layedit;
             comlaypage=laypage;
             getarticle();
+            getdetail();
+            getcommentarticle();
         }else{
             window.location.href="/login"
         }
@@ -177,22 +179,7 @@ function getuserdata(){
 
 
 /*
-function comment() {
-    $.post("/api/comment/add",JSON.stringify({"commentauthor":btoa(author),"commentauthorid": commentid,"commentcontent":btoa(content),"commenttimestamp":timestamp,"token":Cookies.get('token')}),function (results){
-            if(results.success){
-                layer.alert(results.msg, {
-			        icon: 1,
-			        skin: 'layer-ext-moon'
-		        })
-		        //window.location.href="/"
-            }else{
-                layer.alert(results.msg, {
-                    icon: 2,
-                    skin: 'layer-ext-moon'
-                })
-            }
-    },"json");
-}
+
 
 function getcomment() {
     $.post("/api/comment/search",JSON.stringify({"commentidarrary":idarrary,"token":Cookies.get('token')}),function (results){
@@ -212,12 +199,57 @@ function getcomment() {
 }
 
 */
+function getcommentarticle(){
+    if(window.location.href.indexOf("comment") !=-1){
+        articleid=GetQueryString("id")
+        $.post("/api/article/search", JSON.stringify({"articleid":articleid,"token":Cookies.get("token")}), function (data) {
+            if (data.success) {
+                item=data.data
+                html="<div class=\"item\"><div class=\"item-box  layer-photos-demo1 layer-pho" +
+                                    "tos-demo\"><h3><a href=\"details.html?id="
+                                    +item["articleid"]
+                                    +"\">"
+                                    +unescape(atob(item["articletitle"])).replace("&lt;","<").replace("&gt;",">")
+                                    +"</a></h3>"+"<h5>发布于：<span>"
+                                    +new Date(item["articletimestamp"]).toLocaleString()
+                                    +"</span></h5><p>"
+                                    +unescape(atob(item["articlecontent"])).replace("&lt;","<").replace("&gt;",">")
+                                    +"</p></div></div>".replace("&lt;strike&gt;","<strike>").replace("&lt;/strike&gt;","</strike>").replace("&lt;u&gt;","<u>").replace("&lt;/u&gt;","</u>").replace("&lt;br&gt;","<br>").replace("&lt;b&gt;","<b>").replace("&lt;/b&gt;","</b>");
+                $("#detailcontent").html(html)
+                $("#writecomment").attr("href","/comment.html?id="+item['articleid'])
+            } else {
+                layer.alert("网络错误", {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                });
+            }
+        });
+
+
+    }
+
+}
+
+
 function getdetail(){
     if(window.location.href.indexOf("details") != -1){
         articleid=GetQueryString("id")
         $.post("/api/article/search", JSON.stringify({"articleid":articleid,"token":Cookies.get("token")}), function (data) {
             if (data.success) {
-                
+                item=data.data
+                html="<div class=\"item\"><div class=\"item-box  layer-photos-demo1 layer-pho" +
+                                    "tos-demo\"><h3><a href=\"details.html?id="
+                                    +item["articleid"]
+                                    +"\">"
+                                    +unescape(atob(item["articletitle"])).replace("&lt;","<").replace("&gt;",">")
+                                    +"</a></h3>"+"<h5>发布于：<span>"
+                                    +new Date(item["articletimestamp"]).toLocaleString()
+                                    +"</span></h5><p>"
+                                    +unescape(atob(item["articlecontent"])).replace("&lt;","<").replace("&gt;",">")
+                                    +"</p></div></div>".replace("&lt;strike&gt;","<strike>").replace("&lt;/strike&gt;","</strike>").replace("&lt;u&gt;","<u>").replace("&lt;/u&gt;","</u>").replace("&lt;br&gt;","<br>").replace("&lt;b&gt;","<b>").replace("&lt;/b&gt;","</b>");
+                $("#detailcontent").html(html)
+                $("#writecomment").attr("href","/comment.html?id="+item['articleid'])
+
             } else {
                 layer.alert("网络错误", {
                     icon: 2,
@@ -333,4 +365,23 @@ function uploadarticle() {
                 })
             }
         },"json");
+}
+
+
+function uploadcomment(){
+    $.post("/api/comment/add",JSON.stringify({"commentauthor":btoa(author),"commentauthorid": commentid,"commentcontent":btoa(content),"commenttimestamp":timestamp,"token":Cookies.get('token')}),function (results){
+            if(results.success){
+                layer.alert(results.msg, {
+			        icon: 1,
+			        skin: 'layer-ext-moon'
+		        })
+		        //window.location.href="/"
+            }else{
+                layer.alert(results.msg, {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                })
+            }
+    },"json");
+
 }

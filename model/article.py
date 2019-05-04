@@ -35,7 +35,7 @@ class article(object):
         return jsonify(jsonformatstring)
 
     def getdetail(self, articleid):
-        articlevalue = self.cur.select(field=("*"), tablename="article", selectkey="articleid", selectvalue=articleid)
+        articlevalue = self.cur.select(field=("*"), tablename="article", selectkey="articleid", selectvalue=articleid)[0]
         return jsonify({"success": 1, "data": {
             "articleid": articlevalue[0],
             "articletitle": articlevalue[1],
