@@ -112,8 +112,9 @@ def addcomment():
 def searchcomment():
     userdata = getjson()
     commentobj = comment()
-    if checklogin(userdata["token"]):
-        return jsonify({"success": 1, "data": commentobj.getcomment()})
+    userobj=user()
+    if userobj.islogin(userdata["token"]):
+        return commentobj.getcomment()
     else:
         return jsonify({"success": 0, "msg": "请登录"})
 
